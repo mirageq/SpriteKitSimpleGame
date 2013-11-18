@@ -9,24 +9,45 @@
 #import "ViewController.h"
 #import "MyScene.h"
 
+@import AVFoundation;
+
+@interface ViewController()
+@property (nonatomic) AVAudioPlayer *backgroundMusicPlayer;
+@end
+
+
 @implementation ViewController
 
-- (void)viewDidLoad
+-(void)viewWillLayoutSubviews
 {
-    [super viewDidLoad];
-
-    // Configure the view.
-    SKView * skView = (SKView *)self.view;
-    skView.showsFPS = YES;
-    skView.showsNodeCount = YES;
+    [super viewWillLayoutSubviews];
     
-    // Create and configure the scene.
-    SKScene * scene = [MyScene sceneWithSize:skView.bounds.size];
-    scene.scaleMode = SKSceneScaleModeAspectFill;
+    NSError *error;
+    NSURL * backgroundMusicURL = [[NSBundle mainBundle] URLForResource:@"background-music-aac" withExtension:@"caf"];
     
-    // Present the scene.
-    [skView presentScene:scene];
+    self.backgroundMusicPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:backgroundMusicURL error:&error];
+    self.backgroundMusicPlayer.numberOfLoops = -1;
+    [self.backgroundMusicPlayer prepareToPlay];
+  //  [self.backgroundMusicPlayer play];
+    
+    
+    //Configure the view
+    SKView *skView = (SKView *)self.view;
+    if(!skView.scene)
+    {
+        skView.showsFPS = YES;
+        skView.showsNodeCount = YES;
+        
+        //Create and configure the scene
+        SKScene * scene = [MyScene sceneWithSize:skView.bounds.size];
+        scene.scaleMode = SKSceneScaleModeAspectFill;
+        
+        [skView presentScene:scene];
+    }
+    
+    
 }
+
 
 - (BOOL)shouldAutorotate
 {
